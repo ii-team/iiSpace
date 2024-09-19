@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Radar with Dashed Circles and Web</title>
+  <style>
+    body {
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #000;
+        overflow: hidden;
+      }
+      #radar {
+        width: 1000px;
+        height: 1000px;
+        border-radius: 50%;
+        position: relative;
+        overflow: hidden;
+        background-color: rgba(0, 50, 0, 0.359);
+      }
+      #radar::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        background-image: url("./bg.png");
+        background-size: 100%;
+        background-repeat: no-repeat;
+        background-position: center;
+        opacity: 0.2;
+        z-index: 1;
+      }
+      /* Create 8 circles with alternate dashed lines and shadows */
+      .grid {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        z-index: 2;
+        box-shadow: 0 0 15px rgba(0, 255, 0, 0.486);
+      }
+      .grid:nth-child(1) { border: 2px solid rgba(0, 255, 0, 0.443); transform: scale(1); }
+      .grid:nth-child(2) { border: 3px dashed rgba(0, 255, 0, 0.443); transform: scale(0.875); border-width: 2px; }
+      .grid:nth-child(3) { border: 2px solid rgba(0, 255, 0, 0.443);transform: scale(0.75); }
+      .grid:nth-child(4) { border: 3px dashed rgba(0, 255, 0, 0.443); transform: scale(0.625); border-width: 2px; }
+      .grid:nth-child(5) { border: 2px solid rgba(0, 255, 0, 0.443); transform: scale(0.5); }
+      .grid:nth-child(6) { border: 3px dashed rgba(0, 255, 0, 0.443); transform: scale(0.375); border-width: 2px; }
+      .grid:nth-child(7) { border: 2px solid rgba(0, 255, 0, 0.443); transform: scale(0.25); }
+      .grid:nth-child(8) { border: 3px dashed rgba(0, 255, 0, 0.443); transform: scale(0.125); border-width: 2px; }
+      
+      /* Radar scanner line */
+      .scanner {
+        position: absolute;
+        width: 70%;
+        height: 5px;
+        background: linear-gradient(
+          to right,
+          rgba(0, 255, 0, 0.209) 0%,
+          rgba(0, 255, 0, 0.537) 100%
+        );
+        top: 50%;
+        left: 50%;
+        transform-origin: left center;
+        z-index: 3;
+    
+}
+      
+      .scanner1 {
+        animation: scan 4s linear infinite;
+        box-shadow: rgba(0, 255, 0, 0.5) 0 0 700px 50px;
+      }
+      
+      .scanner2 {
+        animation: scan 4s linear infinite 2s;
+        box-shadow: rgba(0, 255, 0, 0.5) 0 0 700px 50px;
+      }
+      
+      /* Adding a web structure with lines at specific angles */
+      .web-line {
+        position: absolute;
+        height: 100%;
+        width: 1px;
+        background-color: rgba(25, 89, 25, 0.5);
+        transform-origin: center center;
+        top: 0%;
+        left: 50%;
+      }
+      .web-line.angle-30 { transform: rotate(30deg); }
+      .web-line.angle-60 { transform: rotate(60deg); }
+      .web-line.angle-90 { transform: rotate(90deg); }
+      .web-line.angle-120 { transform: rotate(120deg); }
+      .web-line.angle-150 { transform: rotate(150deg); }
+      .web-line.angle-180 { transform: rotate(180deg); }
+      .web-line.angle-210 { transform: rotate(210deg); }
+      .web-line.angle-240 { transform: rotate(240deg); }
+      .web-line.angle-270 { transform: rotate(270deg); }
+      .web-line.angle-300 { transform: rotate(300deg); }
+      .web-line.angle-330 { transform: rotate(330deg); }
+      .web-line.angle-360 { transform: rotate(360deg); }
+      
+      .airplane {
+        position: absolute;
+        width: 30px;
+        height: 30px;
+        background-image: url("./mdi_flight.png"); /* Replace with your airplane image URL */
+        background-size: contain;
+        background-repeat: no-repeat;
+        z-index: 4;
+      }
+      
+      @keyframes scan {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }      
+  </style>
+</head>
+<body>
+  <div id="radar">
+    <!-- Radar grid circles -->
+    <div class="grid"></div>
+    <div class="grid"></div>
+    <div class="grid"></div>
+    <div class="grid"></div>
+    <div class="grid"></div>
+    <div class="grid"></div>
+    <div class="grid"></div>
+    <div class="grid"></div>
+
+    <!-- Web structure (cross lines) -->
+    <div class="web-line angle-30"></div>
+    <div class="web-line angle-60"></div>
+    <div class="web-line angle-90"></div>
+    <div class="web-line angle-120"></div>
+    <div class="web-line angle-150"></div>
+    <div class="web-line angle-180"></div>
+    <div class="web-line angle-210"></div>
+    <div class="web-line angle-240"></div>
+    <div class="web-line angle-270"></div>
+    <div class="web-line angle-300"></div>
+    <div class="web-line angle-330"></div>
+    <div class="web-line angle-360"></div>
+
+    <!-- Scanner Lines -->
+    <div class="scanner scanner1"></div>
+    <div class="scanner scanner2"></div>
+  </div>
+
+  <script>
+    const radar = document.getElementById("radar");
+    const maxAirplanes = 20;
+    let airplanes = [];
+
+    function createAirplane() {
+      if (airplanes.length < maxAirplanes) {
+        const airplane = document.createElement("div");
+        airplane.className = "airplane";
+        const angle = Math.random() * Math.PI * 2;
+        const distance = Math.random() * 460 + 40;
+        airplane.style.left = `${500 + Math.cos(angle) * distance}px`;
+        airplane.style.top = `${500 + Math.sin(angle) * distance}px`;
+        airplane.style.transform = `rotate(${Math.random() * 360}deg)`;
+        radar.appendChild(airplane);
+        airplanes.push(airplane);
+
+        // Schedule airplane removal after scanner crosses
+        setTimeout(() => {
+          if (airplane) airplane.remove();
+          airplanes = airplanes.filter((a) => a !== airplane);
+        }, 4000);
+      }
+    }
+
+    function startRadar() {
+      setInterval(createAirplane, 2000); // Adjust interval if needed
+    }
+
+    // Start the radar scanner
+    startRadar();
+  </script>
+</body>
+</html>
